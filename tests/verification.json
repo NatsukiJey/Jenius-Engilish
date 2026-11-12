@@ -1,0 +1,25 @@
+{
+  "host": "omarchy-j",
+  "url": "http://127.0.0.1:4173",
+  "telegram": {
+    "chatId": "-1004412474862",
+    "messageId": 4,
+    "identicalTextVerified": true
+  },
+  "unitTests": {
+    "passed": 8,
+    "failed": 0
+  },
+  "browserChecks": [
+    "five-question lesson completion",
+    "next level unlock",
+    "no reward on replay",
+    "no heart loss on typing error",
+    "exam failure at 70 percent",
+    "300-second cooldown",
+    "exam success at 100 percent",
+    "390px no horizontal overflow",
+    "1440px desktop inspection",
+    "live report form send"
+  ]
+}
