@@ -11,5 +11,16 @@ const raw = [
 ];
 export const WORDS=raw.map(s=>s.split(';').map(pair=>{const [en,uz]=pair.split('|');return {en,uz}}));
 export const LEVEL_COUNT=50;
+// Single source of truth for question direction. Every renderer and every test uses this.
+// promptLang = language of the word shown on screen; answerLang = language the learner must produce/choose.
+export const QUESTION_TYPES={
+ 'choice':{promptLang:'en',answerLang:'uz',instruction:'Inglizcha so‘zning o‘zbekcha tarjimasini toping'},
+ 'assemble':{promptLang:'uz',answerLang:'en',instruction:'Harflardan inglizcha so‘zni yig‘ing'},
+ 'write-en':{promptLang:'uz',answerLang:'en',instruction:'Ingliz tilida yozing'},
+ 'choice-reverse':{promptLang:'uz',answerLang:'en',instruction:'O‘zbekcha so‘zning inglizcha tarjimasini toping'},
+ 'write-uz':{promptLang:'en',answerLang:'uz',instruction:'O‘zbek tilida yozing'}};
+export const promptOf=(type,word)=>word[QUESTION_TYPES[type].promptLang];
+export const answerOf=(type,word)=>word[QUESTION_TYPES[type].answerLang];
+export const instructionOf=type=>QUESTION_TYPES[type].instruction;
 export function lessonWords(tier,level){const words=WORDS[tier];return Array.from({length:5},(_,i)=>words[((level-1)*3+i)%words.length]);}
-export function questions(tier,level,exam=false){const pool=WORDS[tier];const selected=exam?Array.from({length:10},(_,i)=>pool[(i*7+level)%pool.length]):lessonWords(tier,level);return selected.map((word,i)=>{const type=['choice','assemble','write-en','choice-reverse','write-uz'][i%5];const reverse=type==='choice-reverse';const key=reverse?'en':'uz';const choices=[word[key],...pool.filter(w=>w.en!==word.en).filter((_,j)=>j%7===i%7).slice(0,3).map(w=>w[key])];const offset=(level+i)%4;return {word,type,choices:choices.slice(offset).concat(choices.slice(0,offset))};});}
+export function questions(tier,level,exam=false){const pool=WORDS[tier];const selected=exam?Array.from({length:10},(_,i)=>pool[(i*7+level)%pool.length]):lessonWords(tier,level);return selected.map((word,i)=>{const type=['choice','assemble','write-en','choice-reverse','write-uz'][i%5];const key=QUESTION_TYPES[type].answerLang;const choices=[word[key],...pool.filter(w=>w.en!==word.en).filter((_,j)=>j%7===i%7).slice(0,3).map(w=>w[key])];const offset=(level+i)%4;return {word,type,choices:choices.slice(offset).concat(choices.slice(0,offset))};});}
